@@ -3,18 +3,7 @@ import sys
 import os
 import subprocess
 
-'''
-app = Flask(__name__)
 
-@app.route("/")
-def hello():
-    return "Hello from Dockerized Flask App!!"
-
-if __name__ == "__main__":
-    app.run(debug=True,host='0.0.0.0')
-'''
-
-#'''
 app = Flask(__name__)
 
 global folder_name
@@ -27,23 +16,24 @@ def hello():
     return "Hello from Dockerized Flask App!!"
 
 
-#"""
-#2.#app.route are runtime methods which run when user execute the url pattern in web application. Flash tries to find the requesteed url pattern in app.route defintions.
-@app.route("/v1/<variable>", methods=['GET']) # v1 is a static variable and in our project the url will be changing, the user will request content/data based on different/variable filename. The <variable> will take care of it.
+
+#2.app.route are runtime methods which run when user execute the url pattern in web application. Flash tries to find the requesteed url pattern in app.route defintions.
+@app.route("/v1/<variable>", methods=['GET']) # v1 is a static variable and in the project the url will be changing, the user will request content/data based on different/variable filename. The <variable> will take care of it.
 def render_page(variable):
 	global folder_name
 	command_3 = 'cat ' + folder_name + "/" + variable
 	cat_out = subprocess.check_output(command_3, shell=True)
 	return cat_out
-#"""
 
-#1.
+
+# This method clone the given repository in local and it also returns name of the folder with the data
 def process_args_and_get_data(args):   #ARGUMENT =URL
 	git_url =  args[1]
 	command = 'git clone ' + git_url
 	os.system(command)
 	a = git_url.split('/')
 	folder_name = a[-1]
+	folder_name = folder_name.split('.')[0]
 	#print a[-1]
 	command_2 = 'ls ' + folder_name
 	#files = os.system(command_2)
@@ -57,13 +47,12 @@ def process_args_and_get_data(args):   #ARGUMENT =URL
 if __name__ == "__main__":
 	#objective : return or show the file in a given url to repo. since the name of the folder can change and the return type and name of files are something that can change. Therefor we need to retrieve this info from clone repo.
 
-	#""" 
 	global folder_name
 	args = sys.argv
 	folder_name, yml_files = process_args_and_get_data(args) #getting the name of the clone folder. This helps in retrieving the requested file dynamically from this folder. 
-	#"""
+
 
 	app.run(debug=True,host='0.0.0.0') #runs the flask(server) and starts the app
 
-#'''
+
  
